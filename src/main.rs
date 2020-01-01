@@ -1,42 +1,41 @@
 pub struct Solution;
-use std::collections::HashMap;
+use std::i32::MAX;
+
+fn is_even(n: usize) -> bool {
+    n % 2 == 0
+}
 
 impl Solution {
-    pub fn length_of_longest_substring(s: String) -> i32 {
-        let (mut longest, mut start) = (0, 0);
-        let mut hash: HashMap<char, usize> = HashMap::new();
-        for (i, c) in s.chars().enumerate() {
-            if let Some(&j) = hash.get(&c)  {
-                if j >= start {
-                    longest = longest.max(i - start);
-                    start = j + 1;
-                }
+    pub fn find_median_sorted_arrays(nums1: Vec<i32>, nums2: Vec<i32>) -> f64 {
+        let mut result = vec![];
+        let mut i = 0;
+        let mut j = 0;
+        for _ in 0..(nums1.len() + nums2.len()) {
+            let num1 = nums1[i];
+            let num2 = nums2[j];
+            if num1 > num2 {
+                j += 1;
+                result.push(num2);
+            } else {
+                i += 1;
+                result.push(num1);
             }
-            hash.insert(c, i);
         }
-        longest.max(s.len() - start) as i32
+        let median = result.len() / 2;
+        if is_even(result.len()) {
+            return (result[median] + result[median]) as f64 / 2.0;
+        }
+        return result[median + 1] as f64
     }
- }
+}
 
 fn main() {
     assert_eq!(
-        Solution::length_of_longest_substring(String::from("bba")),
-        2
+        Solution::find_median_sorted_arrays(vec![1, 3], vec![2]),
+        2.0
     );
     assert_eq!(
-        Solution::length_of_longest_substring(String::from("abcabcbb")),
-        3
-    );
-    assert_eq!(
-        Solution::length_of_longest_substring(String::from("abba")),
-        2
-    );
-    assert_eq!(
-        Solution::length_of_longest_substring(String::from("cdd")),
-        2
-    );
-    assert_eq!(
-        Solution::length_of_longest_substring(String::from(" ")),
-        1
+        Solution::find_median_sorted_arrays(vec![1, 2], vec![3, 4]),
+        2.5
     );
 }
