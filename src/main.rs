@@ -1,33 +1,35 @@
 pub struct Solution;
 use std::i32::MAX;
 
-fn is_even(n: usize) -> bool {
-    n % 2 == 0
-}
-
 impl Solution {
     pub fn find_median_sorted_arrays(nums1: Vec<i32>, nums2: Vec<i32>) -> f64 {
-        let mut result = vec![];
-        let mut i = 0;
-        let mut j = 0;
-        for _ in 0..(nums1.len() + nums2.len()) {
-            let num1 = nums1[i];
-            let num2 = nums2[j];
-            if num1 > num2 {
-                j += 1;
-                result.push(num2);
-            } else {
+        let (mut i, mut j) = (0, 0);
+        let total_length = nums1.len() + nums2.len();
+        let median = total_length / 2;
+        let mut cur = 0;
+        let mut last = 0;
+        while i + j <= median {
+            let num1 = nums1.get(i).or(Some(&MAX)).unwrap();
+            let num2 = nums2.get(j).or(Some(&MAX)).unwrap();
+            if num1 < num2 {
                 i += 1;
-                result.push(num1);
+                last = cur;
+                cur = *num1;
+            } else {
+                j += 1;
+                last = cur;
+                cur = *num2;
             }
         }
-        let median = result.len() / 2;
-        if is_even(result.len()) {
-            return (result[median] + result[median]) as f64 / 2.0;
+        
+        if total_length % 2 == 0 {
+            return (last + cur) as f64 / 2.0;
         }
-        return result[median + 1] as f64
+
+        cur as f64
     }
 }
+
 
 fn main() {
     assert_eq!(
