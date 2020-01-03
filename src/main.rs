@@ -1,44 +1,53 @@
+
 pub struct Solution;
 
 impl Solution {
-    pub fn roman_to_int(s: String) -> i32 {
-      let (mut last, mut sum) = (0, 0);
-      for c in s.chars() {
-        let cur = match c {
-          'I' => 1,
-          'V' => 5,
-          'X' => 10,
-          'L' => 50,
-          'C' => 100,
-          'D' => 500,
-          'M' => 1000,
-          _ => 0,
-        };
-        if cur > last {
-          sum -= last * 2;
-        }
-        sum += cur;
-        last = cur;
-      }
-      sum
+  pub fn convert(s: String, num_rows: i32) -> String {
+    if num_rows < 2 {
+      return s;
     }
+    let n = s.len() as i32;
+    let cycle_len = num_rows * 2 - 2;
+    let mut result = String::new();
+    let sv: Vec<_> = s.chars().collect();
+
+    for row in 0..num_rows {
+      let mut cycle = 0;
+      while cycle + row < n {
+        result.push(sv[(cycle + row) as usize]);
+        if row != 0 && row != num_rows - 1 && cycle + cycle_len - row < n {
+          result.push(sv[(cycle + cycle_len - row) as usize]);
+        }
+        cycle += cycle_len;
+      }
+    }
+    result
+  }
 }
 
 pub fn main() {
   assert_eq!(
-    3,
-    Solution::roman_to_int(String::from("III")),
+    String::from("PAHNAPLSIIGYIR"),
+    Solution::convert("PAYPALISHIRING".to_string(), 3),
   );
   assert_eq!(
-    4,
-    Solution::roman_to_int(String::from("IV")),
+    String::from("PYAIHRNAPLSIIG"),
+    Solution::convert("PAYPALISHIRING".to_string(), 2),
   );
   assert_eq!(
-    9,
-    Solution::roman_to_int(String::from("IX")),
+    String::from("ABC"),
+    Solution::convert("ABC".to_string(), 3),
   );
   assert_eq!(
-    58,
-    Solution::roman_to_int(String::from("LVIII")),
+    String::from("PINALSIGYAHRPI"),
+    Solution::convert("PAYPALISHIRING".to_string(), 4),
+  );
+  assert_eq!(
+    String::from("AB"),
+    Solution::convert("AB".to_string(), 1),
+  );
+  assert_eq!(
+    String::from("Aaidoeswr,haenme,rtesqecouishtabrateaeaietedrcinwtgnrlloacsoajsmnsoucutoadodiiesplnrmiaodprs,ubroohreunefnttacneedhsmwynihrieto,iheeaalwnefrdutettpntainnwrdvdr."),
+    Solution::convert("Apalindromeisaword,phrase,number,orothersequenceofunitsthatcanbereadthesamewayineitherdirection,withgeneralallowancesforadjustmentstopunctuationandworddividers.".to_string(), 2),
   );
 }

@@ -2,6 +2,26 @@ pub struct Solution;
 
 impl Solution {
   pub fn convert(s: String, num_rows: i32) -> String {
+    let n = s.len() as i32;
+    if num_rows < 2 || n < 3 {
+      return s;
+    }
+    let sv: Vec<char> = s.chars().collect();
+    let mut result = "".to_string();
+    let cycle_len = num_rows * 2 - 2;
+
+    for row in 0..num_rows {
+      let mut cycle = 0;
+      while cycle + row < n {
+        result.push(sv[(cycle + row) as usize]);
+        if row != 0 && row != num_rows - 1 && cycle + cycle_len - row < n {
+          result.push(sv[(cycle + cycle_len - row) as usize]);
+        }
+        cycle += cycle_len;
+      }
+    }
+
+    result
   }
 }
 /*
