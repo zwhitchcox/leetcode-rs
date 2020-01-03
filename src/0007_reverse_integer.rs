@@ -20,3 +20,4 @@ pub fn main() {
   assert_eq!(Solution::reverse(-321), -123);
   assert_eq!(Solution::reverse(1534236469), 0);
 }
+
