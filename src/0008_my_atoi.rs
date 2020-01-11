@@ -2,23 +2,27 @@ pub struct Solution;
 
 impl Solution {
   pub fn my_atoi(str: String) -> i32 {
-    let mut s = str.chars().skip_while(|c| c.is_whitespace()).peekable();
+    let mut chrs = str
+      .chars()
+      .skip_while(|c| c == &' ')
+      .peekable();
     let mut sign = 1;
-    match s.peek() {
-      Some(&'+') => {
-        s.next();
-      },
+    let mut def = std::i32::MAX;
+    match chrs.peek() {
       Some(&'-') => {
         sign = -1;
-        s.next();
-      },
+        def = std::i32::MIN;
+        chrs.next();
+      }
+      Some(&'+') => {
+        chrs.next();
+      }
       None => {
         return 0;
       }
-      _ => {},
+      _ => {}
     }
-    
-    match s.peek() {
+    match chrs.peek() {
       Some(&c) => {
         if !c.is_ascii_digit() {
           return 0;
@@ -28,17 +32,11 @@ impl Solution {
         return 0;
       }
     }
-    
-    s
-      .take_while(|c| c.is_ascii_digit())
+    chrs.take_while(|c| c.is_ascii_digit())
       .collect::<String>()
       .parse::<i32>()
       .map(|n| n * sign)
-      .unwrap_or(if sign == 1 {
-        std::i32::MAX
-      } else {
-        std::i32::MIN
-      })
+      .unwrap_or(def)
   }
 }
 
